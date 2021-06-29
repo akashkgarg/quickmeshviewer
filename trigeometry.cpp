@@ -5,7 +5,13 @@
 
 TriangleGeometry::TriangleGeometry()
 {
-    igl::read_triangle_mesh("bunny.obj", m_v, m_f);
+    clear();
+}
+
+void TriangleGeometry::load(const QUrl &fileurl)
+{
+    std::cout << "loading file: " << fileurl.path().toStdString() << std::endl;
+    igl::read_triangle_mesh(fileurl.path().toStdString(), m_v, m_f);
     igl::per_vertex_normals(m_v, m_f, m_n);
     std::cout << m_v.rows() << " " << m_f.rows() << std::endl;
     updateData();
@@ -95,5 +101,7 @@ void TriangleGeometry::updateData()
     //                  m_hasNormals ? 6 * sizeof(float) : 3 * sizeof(float),
     //                  QQuick3DGeometry::Attribute::F32Type);
     // }
+    emit geometryUpdated();
+    update();
 }
 //! [update data]

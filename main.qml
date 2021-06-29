@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick3D
 import QtQuick3D.Helpers
 import QuickMeshViewer
+import Qt.labs.platform
 
 Window {
     id: window
@@ -11,6 +12,15 @@ Window {
     height: 720
     visible: true
     color: "#848895"
+
+    FileDialog {
+        id: openDialog
+        fileMode: FileDialog.OpenFile
+        selectedNameFilter.index: 1
+        nameFilters: ["OBJ/OFF files (*.obj *.off)"]
+        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+        onAccepted: triGeom.load(file)
+    }
 
     View3D {
         id: v3d
@@ -36,54 +46,19 @@ Window {
         }
 
         Model {
-            visible: radioGridGeom.checked
-            scale: Qt.vector3d(100, 100, 100)
-            geometry: GridGeometry {
-                id: grid
-                horizontalLines: 20
-                verticalLines: 20
-            }
-            materials: [
-                DefaultMaterial {
-                    lineWidth: sliderLineWidth.value
-                }
-            ]
-        }
-
-        //! [model triangle]
-        Model {
-            visible: radioCustGeom.checked
-            scale: Qt.vector3d(100, 100, 100)
-            geometry: ExampleTriangleGeometry {
-                normals: cbNorm.checked
-                normalXY: sliderNorm.value
-                uv: cbUV.checked
-                uvAdjust: sliderUV.value
-            }
-            materials: [
-                DefaultMaterial {
-                    Texture {
-                        id: baseColorMap
-                        source: "qt_logo_rect.png"
-                    }
-                    cullMode: DefaultMaterial.NoCulling
-                    diffuseMap: cbTexture.checked ? baseColorMap : null
-                    specularAmount: 0.5
-                }
-            ]
-        }
-        //! [model triangle]
-
-        Model {
             visible: true
             scale: Qt.vector3d(100, 100, 100)
             geometry: TriangleGeometry {
+                id: triGeom
+                onGeometryUpdated: {
+                    console.log("geometry updated!");
+                }
             }
             materials: [
                 CustomMaterial {
                     property TextureInput tex: TextureInput {
                         enabled: true
-                        texture: Texture { source: "chrome.png" }
+                        texture: Texture { source: "gold-phong.png" }
                     }
                     shadingMode: CustomMaterial.Unshaded
                     cullMode: CustomMaterial.BackFaceCulling
@@ -93,21 +68,8 @@ Window {
             ]
         }
 
-        Model {
-            visible: radioPointGeom.checked
-            scale: Qt.vector3d(100, 100, 100)
-            geometry: ExamplePointGeometry { }
-            materials: [
-                DefaultMaterial {
-                    lighting: DefaultMaterial.NoLighting
-                    cullMode: DefaultMaterial.NoCulling
-                    diffuseColor: "yellow"
-                    pointSize: sliderPointSize.value
-                }
-            ]
-        }
-
         AxisHelper {
+            visible: cbDisplayAxis.checked
         }
 
         MouseArea {
@@ -156,135 +118,18 @@ Window {
         DebugView {
             source: v3d
         }
-        ButtonGroup {
-            buttons: [ radioGridGeom, radioCustGeom, radioPointGeom ]
-        }
-        RadioButton {
-            id: radioGridGeom
-            text: "GridGeometry"
-            checked: true
-            focusPolicy: Qt.NoFocus
-        }
-        RadioButton {
-            id: radioCustGeom
-            text: "Custom geometry from application (triangle)"
+        CheckBox {
+            id: cbDisplayAxis
+            text: "View Axis"
             checked: false
             focusPolicy: Qt.NoFocus
         }
-        RadioButton {
-            id: radioPointGeom
-            text: "Custom geometry from application (points)"
-            checked: false
+        Button {
+            text: "Load Model"
+            onClicked: {
+                openDialog.open();
+            }
             focusPolicy: Qt.NoFocus
-        }
-        RowLayout {
-            visible: radioGridGeom.checked
-            ColumnLayout {
-                Button {
-                    text: "More X cells"
-                    onClicked: grid.verticalLines += 1
-                    focusPolicy: Qt.NoFocus
-                }
-                Button  {
-                    text: "Fewer X cells"
-                    onClicked: grid.verticalLines -= 1
-                    focusPolicy: Qt.NoFocus
-                }
-            }
-            ColumnLayout {
-                Button {
-                    text: "More Y cells"
-                    onClicked: grid.horizontalLines += 1
-                    focusPolicy: Qt.NoFocus
-                }
-                Button  {
-                    text: "Fewer Y cells"
-                    onClicked: grid.horizontalLines -= 1
-                    focusPolicy: Qt.NoFocus
-                }
-            }
-        }
-        RowLayout {
-            visible: radioGridGeom.checked
-            Label {
-                text: "Line width (if supported)"
-            }
-            Slider {
-                id: sliderLineWidth
-                from: 1.0
-                to: 10.0
-                stepSize: 0.5
-                value: 1.0
-                focusPolicy: Qt.NoFocus
-            }
-        }
-        RowLayout {
-            visible: radioCustGeom.checked
-            CheckBox {
-                id: cbNorm
-                text: "provide normals in geometry"
-                checked: false
-                focusPolicy: Qt.NoFocus
-            }
-            RowLayout {
-                Label {
-                    text: "manual adjust"
-                }
-                Slider {
-                    id: sliderNorm
-                    from: 0.0
-                    to: 1.0
-                    stepSize: 0.01
-                    value: 0.0
-                    focusPolicy: Qt.NoFocus
-                }
-            }
-        }
-        RowLayout {
-            visible: radioCustGeom.checked
-            CheckBox {
-                id: cbTexture
-                text: "enable base color map"
-                checked: false
-                focusPolicy: Qt.NoFocus
-            }
-            CheckBox {
-                id: cbUV
-                text: "provide UV in geometry"
-                checked: false
-                focusPolicy: Qt.NoFocus
-            }
-            RowLayout {
-                Label {
-                    text: "UV adjust"
-                }
-                Slider {
-                    id: sliderUV
-                    from: 0.0
-                    to: 1.0
-                    stepSize: 0.01
-                    value: 0.0
-                    focusPolicy: Qt.NoFocus
-                }
-            }
-        }
-        RowLayout {
-            visible: radioPointGeom.checked
-            ColumnLayout {
-                RowLayout {
-                    Label {
-                        text: "Point size (if supported)"
-                    }
-                    Slider {
-                        id: sliderPointSize
-                        from: 1.0
-                        to: 16.0
-                        stepSize: 1.0
-                        value: 1.0
-                        focusPolicy: Qt.NoFocus
-                    }
-                }
-            }
         }
         TextArea {
             id: infoText

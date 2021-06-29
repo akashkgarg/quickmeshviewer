@@ -13,7 +13,11 @@ class TriangleGeometry : public QQuick3DGeometry
 public:
     TriangleGeometry();
 
+public slots:
+    void load(const QUrl &fileurl);
+
 signals:
+    void geometryUpdated();
 
 private:
     void updateData();
