@@ -51,7 +51,7 @@ Window {
         id: v3d
         anchors.left: parent.left
         anchors.top: parent.top
-        width: parent.width / 2
+        width: parent.width
         height: parent.height
         camera: camera
 
@@ -143,12 +143,11 @@ Window {
         id: v3d2
         anchors.top: parent.top
         anchors.right: parent.right
-        width: parent.width / 2
-        height: parent.height
-
+        width: parent.width / 8
+        height: parent.height / 8
         PerspectiveCamera {
             id: camera2
-            position: Qt.vector3d(0, 0, 600)
+            position: Qt.vector3d(0, 0, 105)
             pivot: Qt.vector3d(0, 0, 0)
         }
 
@@ -162,7 +161,6 @@ Window {
             ]
         }
     }
-
     /* WasdController { */
     /*     controlledObject: camera */
     /* } */
