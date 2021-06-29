@@ -20,6 +20,7 @@ Window {
         PerspectiveCamera {
             id: camera
             position: Qt.vector3d(0, 0, 600)
+            pivot: Qt.vector3d(0, 0, 0)
         }
 
         DirectionalLight {
@@ -100,11 +101,48 @@ Window {
                 }
             ]
         }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            enabled: true
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            propagateComposedEvents: true
+            property real lastX: 0
+            property real lastY: 0
+            property real diffX: 0
+            property real diffY: 0
+
+            function orbit(cam, diff_x, diff_y) {
+                var dist = (cam.pivot.minus(cam.position)).length()
+                cam.position = cam.pivot
+                cam.rotate(diff_x, Qt.vector3d(0, 1, 0), Node.Local)
+                cam.rotate(diff_y, Qt.vector3d(1, 0, 0), Node.Local)
+                cam.position = cam.forward.times(-dist)
+            }
+
+            onPressed: (mouse) => {
+                console.log("clicked!");
+                lastX = mouseX;
+                lastY = mouseY;
+            }
+            onPositionChanged: (mouse) => {
+                if (pressed) {
+                    diffX = mouseX - lastX
+                    diffY = mouseY - lastY
+                    lastX = mouseX
+                    lastY = mouseY
+                    orbit(camera, diffX, diffY)
+                    console.log("pos " + camera.position + " diffX = " + diffX + " diffY " + diffY)
+                }
+            }
+        }
+
     }
 
-    WasdController {
-        controlledObject: camera
-    }
+    /* WasdController { */
+    /*     controlledObject: camera */
+    /* } */
 
     ColumnLayout {
         DebugView {
@@ -249,4 +287,5 @@ Window {
             readOnly: true
         }
     }
+
 }
