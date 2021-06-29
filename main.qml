@@ -50,7 +50,15 @@ Window {
             scale: Qt.vector3d(100, 100, 100)
             geometry: TriangleGeometry {
                 id: triGeom
+
+                // Load geometry from CLI
+                Component.onCompleted: {
+                    if (Qt.application.arguments.length === 2)
+                        load(Qt.application.arguments[1]);
+                }
+
                 onGeometryUpdated: {
+                    // TODO: Center camera
                     console.log("geometry updated!");
                 }
             }
