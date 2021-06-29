@@ -13,6 +13,19 @@ Window {
     visible: true
     color: "#848895"
 
+    component MatcapMaterial : CustomMaterial {
+        property TextureInput tex: TextureInput {
+            enabled: true
+            texture: Texture {
+                source: "gold-phong.png"
+            }
+        }
+        shadingMode: CustomMaterial.Unshaded
+        cullMode: CustomMaterial.BackFaceCulling
+        vertexShader: "matcap.vert"
+        fragmentShader: "matcap.frag"
+    }
+
     FileDialog {
         id: openDialog
         fileMode: FileDialog.OpenFile
@@ -28,12 +41,18 @@ Window {
         selectedNameFilter.index: 1
         nameFilters: ["PNG files (*.png)"]
         folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-        onAccepted: { matcapTexture.source = file }
+        onAccepted: {
+            mainMaterial.tex.texture.source = file
+            secondMaterial.tex.texture.source = file
+        }
     }
 
     View3D {
         id: v3d
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.top: parent.top
+        width: parent.width / 2
+        height: parent.height
         camera: camera
 
         PerspectiveCamera {
@@ -73,18 +92,8 @@ Window {
                 }
             }
             materials: [
-                CustomMaterial {
-                    property TextureInput tex: TextureInput {
-                        enabled: true
-                        texture: Texture {
-                            id: matcapTexture
-                            source: "gold-phong.png"
-                        }
-                    }
-                    shadingMode: CustomMaterial.Unshaded
-                    cullMode: CustomMaterial.BackFaceCulling
-                    vertexShader: "matcap.vert"
-                    fragmentShader: "matcap.frag"
+                MatcapMaterial {
+                    id: mainMaterial
                 }
             ]
         }
@@ -129,6 +138,29 @@ Window {
             }
         }
 
+    }
+    View3D {
+        id: v3d2
+        anchors.top: parent.top
+        anchors.right: parent.right
+        width: parent.width / 2
+        height: parent.height
+
+        PerspectiveCamera {
+            id: camera2
+            position: Qt.vector3d(0, 0, 600)
+            pivot: Qt.vector3d(0, 0, 0)
+        }
+
+        Model {
+            visible: true
+            source: "#Sphere"
+            materials: [
+                MatcapMaterial {
+                    id: secondMaterial
+                }
+            ]
+        }
     }
 
     /* WasdController { */
