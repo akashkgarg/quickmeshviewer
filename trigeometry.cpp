@@ -5,7 +5,7 @@
 
 TriangleGeometry::TriangleGeometry()
 {
-    igl::read_triangle_mesh("sphere.obj", m_v, m_f);
+    igl::read_triangle_mesh("bunny.obj", m_v, m_f);
     igl::per_vertex_normals(m_v, m_f, m_n);
     std::cout << m_v.rows() << " " << m_f.rows() << std::endl;
     updateData();

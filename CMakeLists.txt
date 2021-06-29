@@ -21,6 +21,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${IGL_INCLUDE_DIR})
 
 qt_add_executable(quickmeshviewer
+    resources.qrc
     examplegeometry.cpp examplegeometry.h
     trigeometry.cpp trigeometry.h
     main.cpp
@@ -38,18 +39,18 @@ target_link_libraries(quickmeshviewer PUBLIC
 
 
 # Resources:
-set(resources_resource_files
-    "main.qml"
-    "qt_logo_rect.png"
-)
-
-qt6_add_resources(quickmeshviewer "resources"
-    PREFIX
-        "/"
-    FILES
-        ${resources_resource_files}
-)
-
+#set(resources_resource_files
+#    "main.qml"
+#    "qt_logo_rect.png"
+#)
+#
+#qt6_add_resources(quickmeshviewer "resources"
+#    PREFIX
+#        "/"
+#    FILES
+#        ${resources_resource_files}
+#)
+#
 #install(TARGETS quickmeshviewer 
 #    RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
 #    BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"

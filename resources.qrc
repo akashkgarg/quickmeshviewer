@@ -1,6 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>skin.png</file>
+        <file>red.png</file>
+        <file>chrome.png</file>
+        <file>gold.png</file>
+        <file>gold-phong.png</file>
+        <file>matcap.vert</file>
+        <file>matcap.frag</file>
         <file>qt_logo_rect.png</file>
     </qresource>
 </RCC>

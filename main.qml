@@ -80,10 +80,15 @@ Window {
             geometry: TriangleGeometry {
             }
             materials: [
-                DefaultMaterial {
-                    cullMode: DefaultMaterial.NoCulling
-                    diffuseMap: null
-                    specularAmount: 0.5
+                CustomMaterial {
+                    property TextureInput tex: TextureInput {
+                        enabled: true
+                        texture: Texture { source: "chrome.png" }
+                    }
+                    shadingMode: CustomMaterial.Unshaded
+                    cullMode: CustomMaterial.BackFaceCulling
+                    vertexShader: "matcap.vert"
+                    fragmentShader: "matcap.frag"
                 }
             ]
         }
@@ -102,6 +107,9 @@ Window {
             ]
         }
 
+        AxisHelper {
+        }
+
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
@@ -116,13 +124,13 @@ Window {
             function orbit(cam, diff_x, diff_y) {
                 var dist = (cam.pivot.minus(cam.position)).length()
                 cam.position = cam.pivot
-                cam.rotate(diff_x, Qt.vector3d(0, 1, 0), Node.Local)
-                cam.rotate(diff_y, Qt.vector3d(1, 0, 0), Node.Local)
+                cam.rotate(-diff_x, Qt.vector3d(0, 1, 0), Node.Local)
+                cam.rotate(-diff_y, Qt.vector3d(1, 0, 0), Node.Local)
                 cam.position = cam.forward.times(-dist)
             }
 
             onPressed: (mouse) => {
-                console.log("clicked!");
+                //console.log("clicked!");
                 lastX = mouseX;
                 lastY = mouseY;
             }
@@ -133,7 +141,7 @@ Window {
                     lastX = mouseX
                     lastY = mouseY
                     orbit(camera, diffX, diffY)
-                    console.log("pos " + camera.position + " diffX = " + diffX + " diffY " + diffY)
+                    //console.log("pos " + camera.position + " diffX = " + diffX + " diffY " + diffY)
                 }
             }
         }
@@ -147,10 +155,6 @@ Window {
     ColumnLayout {
         DebugView {
             source: v3d
-        }
-        Label {
-            text: "Use WASD and mouse to navigate"
-            font.bold: true
         }
         ButtonGroup {
             buttons: [ radioGridGeom, radioCustGeom, radioPointGeom ]
