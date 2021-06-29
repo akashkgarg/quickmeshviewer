@@ -143,6 +143,7 @@ Window {
         id: v3d2
         anchors.top: parent.top
         anchors.right: parent.right
+        anchors.margins: 10
         width: parent.width / 8
         height: parent.height / 8
         PerspectiveCamera {
