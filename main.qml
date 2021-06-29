@@ -68,7 +68,8 @@ Window {
 
                 onGeometryUpdated: {
                     // TODO: Center camera
-                    console.log("geometry updated!");
+                    camera.position = Qt.vector3d(0, 0, (100 * 2*boundingRadius) / Math.tan(camera.fieldOfView * 0.008726646259971648))
+                    console.log("geometry updated! camera positioned to " + camera.position);
                 }
             }
             materials: [

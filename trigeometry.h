@@ -9,9 +9,11 @@ class TriangleGeometry : public QQuick3DGeometry
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(TriangleGeometry)
+    Q_PROPERTY(float boundingRadius READ boundingRadius)
 
 public:
     TriangleGeometry();
+    float boundingRadius() const;
 
 public slots:
     void load(const QUrl &fileurl);

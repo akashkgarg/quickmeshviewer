@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>gold.png</file>
+        <file>gold-phong.png</file>
         <file>matcap.vert</file>
         <file>matcap.frag</file>
         <file>qt_logo_rect.png</file>

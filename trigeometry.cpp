@@ -104,4 +104,18 @@ void TriangleGeometry::updateData()
     emit geometryUpdated();
     update();
 }
+
+float TriangleGeometry::boundingRadius() const
+{
+    auto min = m_v.colwise().minCoeff();
+    auto max = m_v.colwise().maxCoeff();
+    Eigen::Vector3f absdiff;
+    for (int i = 0; i < 3; ++i) {
+        absdiff[i] = std::max(fabs(min[i]), fabs(max[i]));
+    }
+
+    float r = absdiff.maxCoeff();
+    return r;
+}
+
 //! [update data]
