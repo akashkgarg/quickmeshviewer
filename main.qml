@@ -22,6 +22,15 @@ Window {
         onAccepted: triGeom.load(file)
     }
 
+    FileDialog {
+        id: matcapOpenDialog
+        fileMode: FileDialog.OpenFile
+        selectedNameFilter.index: 1
+        nameFilters: ["PNG files (*.png)"]
+        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+        onAccepted: { matcapTexture.source = file }
+    }
+
     View3D {
         id: v3d
         anchors.fill: parent
@@ -66,7 +75,10 @@ Window {
                 CustomMaterial {
                     property TextureInput tex: TextureInput {
                         enabled: true
-                        texture: Texture { source: "gold-phong.png" }
+                        texture: Texture {
+                            id: matcapTexture
+                            source: "gold-phong.png"
+                        }
                     }
                     shadingMode: CustomMaterial.Unshaded
                     cullMode: CustomMaterial.BackFaceCulling
@@ -136,6 +148,13 @@ Window {
             text: "Load Model"
             onClicked: {
                 openDialog.open();
+            }
+            focusPolicy: Qt.NoFocus
+        }
+        Button {
+            text: "Load MatCap"
+            onClicked: {
+                matcapOpenDialog.open();
             }
             focusPolicy: Qt.NoFocus
         }
